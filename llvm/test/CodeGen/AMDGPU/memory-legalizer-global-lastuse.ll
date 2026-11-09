@@ -78,9 +78,13 @@ define amdgpu_kernel void @global_last_use_load_1(ptr addrspace(1) %in, ptr addr
 ; GFX12-NEXT:    v_ashrrev_i32_e64 v3, 31, v1
 ; GFX12-NEXT:    ; kill: def $vgpr1 killed $vgpr1 def $vgpr1_vgpr2 killed $exec
 ; GFX12-NEXT:    v_mov_b32_e32 v2, v3
+; GFX12-NEXT:    ; kill: def $vgpr1 killed $vgpr1 killed $vgpr1_vgpr2 killed $exec
 ; GFX12-NEXT:    s_mov_b32 s2, 2
 ; GFX12-NEXT:    s_wait_alu depctr_sa_sdst(0)
-; GFX12-NEXT:    v_lshlrev_b64_e64 v[2:3], s2, v[1:2]
+; GFX12-NEXT:    v_lshlrev_b32_e64 v2, s2, v1
+; GFX12-NEXT:    v_mov_b32_e32 v1, 0
+; GFX12-NEXT:    ; kill: def $vgpr2 killed $vgpr2 def $vgpr2_vgpr3 killed $exec
+; GFX12-NEXT:    v_mov_b32_e32 v3, v1
 ; GFX12-NEXT:    s_mov_b32 s3, s4
 ; GFX12-NEXT:    v_mov_b32_e32 v1, v2
 ; GFX12-NEXT:    s_mov_b32 s2, s5
@@ -221,9 +225,13 @@ define amdgpu_kernel void @global_last_use_and_nontemporal_load(ptr addrspace(1)
 ; GFX12-NEXT:    v_ashrrev_i32_e64 v3, 31, v1
 ; GFX12-NEXT:    ; kill: def $vgpr1 killed $vgpr1 def $vgpr1_vgpr2 killed $exec
 ; GFX12-NEXT:    v_mov_b32_e32 v2, v3
+; GFX12-NEXT:    ; kill: def $vgpr1 killed $vgpr1 killed $vgpr1_vgpr2 killed $exec
 ; GFX12-NEXT:    s_mov_b32 s2, 2
 ; GFX12-NEXT:    s_wait_alu depctr_sa_sdst(0)
-; GFX12-NEXT:    v_lshlrev_b64_e64 v[2:3], s2, v[1:2]
+; GFX12-NEXT:    v_lshlrev_b32_e64 v2, s2, v1
+; GFX12-NEXT:    v_mov_b32_e32 v1, 0
+; GFX12-NEXT:    ; kill: def $vgpr2 killed $vgpr2 def $vgpr2_vgpr3 killed $exec
+; GFX12-NEXT:    v_mov_b32_e32 v3, v1
 ; GFX12-NEXT:    s_mov_b32 s3, s4
 ; GFX12-NEXT:    v_mov_b32_e32 v1, v2
 ; GFX12-NEXT:    s_mov_b32 s2, s5

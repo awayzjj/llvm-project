@@ -25,8 +25,12 @@ define amdgpu_kernel void @test_smfmac_f32_32x32x32_f16__vgpr(ptr addrspace(1) %
 ; CHECK-NEXT:    v_ashrrev_i32_e64 v1, 31, v2
 ; CHECK-NEXT:    ; kill: def $vgpr2 killed $vgpr2 def $vgpr2_vgpr3 killed $exec
 ; CHECK-NEXT:    v_mov_b32_e32 v3, v1
+; CHECK-NEXT:    v_mov_b32_e32 v1, v2
 ; CHECK-NEXT:    s_mov_b32 s3, 6
-; CHECK-NEXT:    v_lshlrev_b64 v[2:3], s3, v[2:3]
+; CHECK-NEXT:    v_lshlrev_b32_e64 v2, s3, v1
+; CHECK-NEXT:    v_mov_b32_e32 v1, 0
+; CHECK-NEXT:    ; kill: def $vgpr2 killed $vgpr2 def $vgpr2_vgpr3 killed $exec
+; CHECK-NEXT:    v_mov_b32_e32 v3, v1
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    v_lshl_add_u64 v[2:3], s[0:1], 0, v[2:3]
 ; CHECK-NEXT:    global_load_dwordx4 v[4:7], v[2:3], off offset:16

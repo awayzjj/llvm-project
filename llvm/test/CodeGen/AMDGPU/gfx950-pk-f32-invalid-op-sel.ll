@@ -1384,7 +1384,8 @@ define amdgpu_kernel void @canon_swap(ptr addrspace(1) %out, ptr addrspace(1) %i
 ; GFX90A-NEXT:    v_and_b32_e64 v0, v0, s4
 ; GFX90A-NEXT:    v_ashrrev_i32_e64 v1, 31, v0
 ; GFX90A-NEXT:    s_mov_b32 s4, 3
-; GFX90A-NEXT:    v_lshlrev_b64 v[0:1], s4, v[0:1]
+; GFX90A-NEXT:    v_lshlrev_b32_e64 v0, s4, v0
+; GFX90A-NEXT:    v_mov_b32_e32 v1, 0
 ; GFX90A-NEXT:    s_waitcnt lgkmcnt(0)
 ; GFX90A-NEXT:    v_add_co_u32_e64 v0, s[4:5], s2, v0
 ; GFX90A-NEXT:    v_mov_b32_e32 v3, s3
@@ -1471,7 +1472,8 @@ define amdgpu_kernel void @canon_hi(ptr addrspace(1) %out, ptr addrspace(1) %in)
 ; GFX90A-NEXT:    v_and_b32_e64 v0, v0, s4
 ; GFX90A-NEXT:    v_ashrrev_i32_e64 v1, 31, v0
 ; GFX90A-NEXT:    s_mov_b32 s4, 3
-; GFX90A-NEXT:    v_lshlrev_b64 v[0:1], s4, v[0:1]
+; GFX90A-NEXT:    v_lshlrev_b32_e64 v0, s4, v0
+; GFX90A-NEXT:    v_mov_b32_e32 v1, 0
 ; GFX90A-NEXT:    s_waitcnt lgkmcnt(0)
 ; GFX90A-NEXT:    v_add_co_u32_e64 v0, s[4:5], s2, v0
 ; GFX90A-NEXT:    v_mov_b32_e32 v3, s3
@@ -1561,7 +1563,8 @@ define amdgpu_kernel void @canon_neg_swap(ptr addrspace(1) %out, ptr addrspace(1
 ; GFX90A-NEXT:    v_and_b32_e64 v0, v0, s4
 ; GFX90A-NEXT:    v_ashrrev_i32_e64 v1, 31, v0
 ; GFX90A-NEXT:    s_mov_b32 s4, 3
-; GFX90A-NEXT:    v_lshlrev_b64 v[0:1], s4, v[0:1]
+; GFX90A-NEXT:    v_lshlrev_b32_e64 v0, s4, v0
+; GFX90A-NEXT:    v_mov_b32_e32 v1, 0
 ; GFX90A-NEXT:    s_waitcnt lgkmcnt(0)
 ; GFX90A-NEXT:    v_add_co_u32_e64 v0, s[4:5], s2, v0
 ; GFX90A-NEXT:    v_mov_b32_e32 v3, s3

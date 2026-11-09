@@ -856,6 +856,40 @@ def : GCNPat<(UniformTernaryFrag<fshr> i32:$src0, i32:$src1, (i32 ShiftAmt32Imm:
   (i32 (EXTRACT_SUBREG (S_LSHR_B64 (REG_SEQUENCE SReg_64, $src1, sub0, $src0, sub1), $src2), sub0))
 >;
 
+// (shl i64:x, C) whose result fits in the low 32 bits: x has at least 32 + C
+// known leading zeros, with 0 < C < 32.
+def shl64_fits_lo32 : PatFrag<
+  (ops node:$src0, node:$src1), (shl node:$src0, node:$src1), [{
+    auto *Amt = dyn_cast<ConstantSDNode>(N->getOperand(1));
+    if (!Amt || Amt->isZero() || Amt->getZExtValue() >= 32)
+      return false;
+    return CurDAG->computeKnownBits(N->getOperand(0)).countMinLeadingZeros() >=
+           32 + Amt->getZExtValue();
+  }]> {
+  let GISelPredicateCode = [{
+    std::optional<ValueAndVReg> Amt =
+        getIConstantVRegValWithLookThrough(MI.getOperand(2).getReg(), MRI);
+    if (!Amt || Amt->Value.isZero() || Amt->Value.uge(32))
+      return false;
+    return VT->getKnownBits(MI.getOperand(1).getReg()).countMinLeadingZeros() >=
+           32 + Amt->Value.getZExtValue();
+  }];
+}
+
+let AddedComplexity = 20 in {
+def : GCNPat<(i64 (DivergentBinFrag<shl64_fits_lo32> i64:$src0, i32:$src1)),
+  (REG_SEQUENCE VReg_64,
+    (V_LSHLREV_B32_e64 $src1, (i32 (EXTRACT_SUBREG VReg_64:$src0, sub0))), sub0,
+    (V_MOV_B32_e32 (i32 0)), sub1)
+>;
+
+def : GCNPat<(i64 (UniformBinFrag<shl64_fits_lo32> i64:$src0, i32:$src1)),
+  (REG_SEQUENCE SReg_64,
+    (S_LSHL_B32 (i32 (EXTRACT_SUBREG SReg_64:$src0, sub0)), $src1), sub0,
+    (S_MOV_B32 (i32 0)), sub1)
+>;
+} // End AddedComplexity = 20
+
 // Wrapper around s_swappc_b64 with extra $callee parameter to track
 // the called function after regalloc.
 def SI_CALL : SPseudoInstSI <
